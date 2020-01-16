@@ -1,0 +1,69 @@
+---
+# tasks file for ottar63.docker
+    - name: Install prereq
+      yum:
+        pkg:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+
+    - name: Add Docker Repo
+      yum_repository:
+        name: docker
+        description: Docker repository
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        #gpgcheck: no
+        #metalink: https://download.docker.com/linux/centos/
+        baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
+
+    - name:  Install docker
+      yum:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    - name: Add user to docker group
+      command:
+        "usermod -aG docker {{docker_user}}"
+
+    - name: Create ssh keys
+      openssh_keypair:
+        path: ./.ssh/id_rsa
+        owner: "{{docker_user}}"
+      when: ansible_host == "master"
+      become_user: "{{docker_user}}"
+      register: ssh_key
+
+    - name: add keys to nodes
+      authorized_key:
+        user: "{{docker_user}}"
+        state: present
+        key: "{{hostvars.master.ssh_key.public_key}}"
+      when: ansible_host != "master"
+
+#    - name: debug hostvars
+#      debug:
+#        msg: "hostvars master: {{hostvars.master.ssh_key.public_key}}"
+#      when: ansible_host != "master" 
+#        
+#    - name: show keys
+#      debug:
+#        msg:  " ssh_key ret: {{ssh_key.public_key}}"
+
+    - name: ignore known_host
+      copy:
+        dest: /home/{{docker_user}}/.ssh/config
+        content: |
+            Host node1
+              StrictHostKeyChecking no
+              UserKnownHostsFile=/dev/null
+            Host node2
+              StrictHostKeyChecking no
+              UserKnownHostsFile=/dev/null
+        owner: "{{docker_user}}"
+
+    - name: Start docker
+      service: 
+        name: docker
+        state: started

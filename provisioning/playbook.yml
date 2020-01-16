@@ -1,0 +1,38 @@
+---
+- hosts: all
+  become: true
+  vars_files: 
+    - vars.yml
+  roles:
+    - ottar63.docker
+
+  pre_tasks:
+    - name: Add user "{{docker_user}}"
+      user:
+        name: "{{docker_user}}"
+        comment: "{{docker_user_full}}"
+        groups: wheel
+        shell: /bin/bash
+        password: "$6$mysecretsalt$8.AvNg6M47drSMjGVohsvDlGep/7gqSY584PRfKp0udnW9eFsT1tIQL6TaNnmyi9qJTCIiNIirqHSjiCCUkmv/"
+        update_password: on_create
+        state: present
+      register: user_ret
+    
+    - name: debug
+      debug:
+        msg: "User_create {{user_ret}}"
+
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: "{{docker_user}}"
+        state: present
+        key: "{{ lookup('file', '/home/ottar/.ssh/id_rsa.pub') }}"
+
+    - name: Copy sudo file
+      template: 
+        src: ./files/010_nopass
+        dest: "/etc/sudoers.d/010_{{docker_user}}_nopass"
+        owner: root
+        group: root
+        mode: 0644
+
