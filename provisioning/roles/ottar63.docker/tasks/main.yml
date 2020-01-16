@@ -12,8 +12,6 @@
         name: docker
         description: Docker repository
         gpgkey: https://download.docker.com/linux/centos/gpg
-        #gpgcheck: no
-        #metalink: https://download.docker.com/linux/centos/
         baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
 
     - name:  Install docker
@@ -27,7 +25,7 @@
       command:
         "usermod -aG docker {{docker_user}}"
 
-    - name: Create ssh keys
+    - name: Create ssh keys on node master
       openssh_keypair:
         path: ./.ssh/id_rsa
         owner: "{{docker_user}}"
@@ -42,14 +40,6 @@
         key: "{{hostvars.master.ssh_key.public_key}}"
       when: ansible_host != "master"
 
-#    - name: debug hostvars
-#      debug:
-#        msg: "hostvars master: {{hostvars.master.ssh_key.public_key}}"
-#      when: ansible_host != "master" 
-#        
-#    - name: show keys
-#      debug:
-#        msg:  " ssh_key ret: {{ssh_key.public_key}}"
 
     - name: ignore known_host
       copy:
