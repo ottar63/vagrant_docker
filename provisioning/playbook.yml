@@ -3,10 +3,8 @@
   become: true
   vars_files: 
     - vars.yml
-  roles:
-    - ottar63.docker
 
-  pre_tasks:
+  tasks:
     - name: Add user "{{docker_user}}"
       user:
         name: "{{docker_user}}"
