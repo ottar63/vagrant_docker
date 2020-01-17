@@ -16,9 +16,6 @@
         state: present
       register: user_ret
     
-    - name: debug
-      debug:
-        msg: "User_create {{user_ret}}"
 
     - name: Set authorized key taken from file
       authorized_key:
