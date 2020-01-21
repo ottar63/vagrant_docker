@@ -9,7 +9,7 @@
       user:
         name: "{{docker_user}}"
         comment: "{{docker_user_full}}"
-        groups: wheel
+        groups: sudo 
         shell: /bin/bash
         password: "$6$mysecretsalt$8.AvNg6M47drSMjGVohsvDlGep/7gqSY584PRfKp0udnW9eFsT1tIQL6TaNnmyi9qJTCIiNIirqHSjiCCUkmv/"
         update_password: on_create
@@ -31,3 +31,11 @@
         group: root
         mode: 0644
 
+    - name:  Edit hosts file
+      blockinfile:
+        path: /etc/hosts
+        block: |
+          192.168.33.30 master
+          192.168.33.31 node1
+          192.168.33.32 node2
+    
