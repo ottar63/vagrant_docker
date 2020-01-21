@@ -1,0 +1,40 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Install Python tools
+      apt:
+        name: 
+          - python-setuptools
+          - python-pip
+        state: present
+
+    - name: install  docker python SDK
+      pip:
+        name: 
+          - docker-py
+
+    - name: Start docker swarm on master
+      docker_swarm:
+        advertise_addr:  192.168.33.30
+        state: present
+      register: swarm_out
+      when: ansible_host == "master"
+      
+
+# since vagrant creates it's own host only interface, we need to loop through 
+#interfaces on each node to set correct advertise address
+    - name: Join nodes to swarm
+      docker_swarm:
+        state: join
+        remote_addrs: 192.168.33.30
+        join_token: "{{hostvars.master.swarm_out.swarm_facts.JoinTokens.Worker}}"
+        advertise_addr: "{{item}}"
+      with_items:
+        - "{{ansible_all_ipv4_addresses}}"
+      when: item is search("192.") and  ansible_host != "maser"
+
+#    - debug: 
+#        msg: "swarm_ou: {{swarm_out}}"
+#      when: ansible_host == "master"

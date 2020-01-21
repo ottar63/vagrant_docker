@@ -1,21 +1,27 @@
 ---
 # tasks file for ottar63.docker
     - name: Install prereq
-      yum:
+      apt:
         pkg:
-          - yum-utils
-          - device-mapper-persistent-data
-          - lvm2
+          - apt-transport-https
+          - software-properties-common
+          - ca-certificates
+          - python
+          - python-pip
+        update-cache: yes
+
+    - name: Add Docker PGP Repo key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
 
     - name: Add Docker Repo
-      yum_repository:
-        name: docker
-        description: Docker repository
-        gpgkey: https://download.docker.com/linux/centos/gpg
-        baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        update_cache: yes
 
     - name:  Install docker
-      yum:
+      apt:
         pkg:
           - docker-ce
           - docker-ce-cli
