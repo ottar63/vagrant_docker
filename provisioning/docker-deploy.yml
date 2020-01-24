@@ -1,0 +1,15 @@
+---
+- hosts: master
+  tasks:
+    - name: Copy vote.yml
+      template:
+        src: ./files/vote.yml
+        dest: vote.yml
+
+    - name:  Deploy demo service
+      docker_stack:
+        compose:
+          - ./vote.yml
+        state: present
+        name:  vote
+

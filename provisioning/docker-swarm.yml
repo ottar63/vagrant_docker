@@ -10,10 +10,12 @@
           - python-pip
         state: present
 
-    - name: install  docker python SDK
+    - name: install  docker python library
       pip:
         name: 
           - docker-py
+          - jsondiff
+          - pyyaml
 
     - name: Start docker swarm on master
       docker_swarm:
