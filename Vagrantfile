@@ -16,12 +16,24 @@ Vagrant.configure("2") do | config |
     master.vm.box = "ubuntu/bionic64"
     master.vm.network "private_network", ip: "192.168.33.30"
     master.vm.hostname = "master"
+    master.persistent_storage.enabled = true
+    master.persistent_storage.location="/export/vagrant_db.vdi"
+    master.persistent_storage.size = 10000
+    master.persistent_storage.mountname="prosqldb"
+    master.persistent_storage.filesystem = 'ext4'
+    master.persistent_storage.mountpoint = "/data/prosqldb"
+    master.persistent_storage.volgroupname = "volumegrp1"
+    master.persistent_storage.diskdevice = '/dev/sdc'
     master.vm.provider "virtualbox" do |vb|
-    #   # Display the VirtualBox GUI when booting the machine
-    #   vb.gui = true
-    #
     #   # Customize the amount of memory on the VM:
       vb.memory = "512"
+      
+      # Create persistent volume
+      #file_to_disk='/export/vagrant_db.vdi'
+      #if ! File.exist?(file_to_disk)
+      #  vb.customize ['createhd','--filename',file_to_disk,'--size', 50 * 1024]
+      #end
+      #vb.customize ['storageattach',:id,'--storagectl','SCSI','--port',2,'--device',0,'--type', 'hdd','--medium','/export/vagrant_db.vdi']
     end
   end
   config.vm.define "node1" do|node1|
