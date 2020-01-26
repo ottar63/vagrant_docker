@@ -6,6 +6,12 @@
         src: ./files/vote.yml
         dest: vote.yml
 
+    - name:  Create directory for postgresql database
+      become: true
+      file:
+        path: /data/postgresql/data
+        state: directory
+        mode: 0777
     - name:  Deploy demo service
       docker_stack:
         compose:
