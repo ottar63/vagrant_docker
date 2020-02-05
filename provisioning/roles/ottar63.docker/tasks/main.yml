@@ -28,14 +28,16 @@
           - containerd.io
 
     - name: Add user to docker group
-      command:
-        "usermod -aG docker {{docker_user}}"
+      user:
+        name: "{{docker_user}}"
+        append: yes
+        groups: docker 
 
     - name: Create ssh keys on node master
       openssh_keypair:
         path: ./.ssh/id_rsa
         owner: "{{docker_user}}"
-      when: ansible_host == "master"
+      when: ansible_host == "vamaster"
       become_user: "{{docker_user}}"
       register: ssh_key
 
@@ -43,18 +45,18 @@
       authorized_key:
         user: "{{docker_user}}"
         state: present
-        key: "{{hostvars.master.ssh_key.public_key}}"
-      when: ansible_host != "master"
+        key: "{{hostvars.vamaster.ssh_key.public_key}}"
+      when: ansible_host != "vamaster"
 
 
     - name: ignore known_host
       copy:
         dest: /home/{{docker_user}}/.ssh/config
         content: |
-            Host node1
+            Host vanode1
               StrictHostKeyChecking no
               UserKnownHostsFile=/dev/null
-            Host node2
+            Host vanode2
               StrictHostKeyChecking no
               UserKnownHostsFile=/dev/null
         owner: "{{docker_user}}"

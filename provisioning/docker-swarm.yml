@@ -22,7 +22,7 @@
         advertise_addr:  192.168.33.30
         state: present
       register: swarm_out
-      when: ansible_host == "master"
+      when: ansible_host == "vamaster"
       
 
 # since vagrant creates it's own host only interface, we need to loop through 
@@ -31,12 +31,9 @@
       docker_swarm:
         state: join
         remote_addrs: 192.168.33.30
-        join_token: "{{hostvars.master.swarm_out.swarm_facts.JoinTokens.Worker}}"
+        join_token: "{{hostvars.vamaster.swarm_out.swarm_facts.JoinTokens.Worker}}"
         advertise_addr: "{{item}}"
       with_items:
         - "{{ansible_all_ipv4_addresses}}"
-      when: item is search("192.") and  ansible_host != "maser"
+      when: item is search("192.") and  ansible_host != "vamaser"
 
-#    - debug: 
-#        msg: "swarm_ou: {{swarm_out}}"
-#      when: ansible_host == "master"

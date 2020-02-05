@@ -8,10 +8,9 @@
     - name: Add user "{{docker_user}}"
       user:
         name: "{{docker_user}}"
-        comment: "{{docker_user_full}}"
         groups: sudo 
         shell: /bin/bash
-        password: "$6$mysecretsalt$8.AvNg6M47drSMjGVohsvDlGep/7gqSY584PRfKp0udnW9eFsT1tIQL6TaNnmyi9qJTCIiNIirqHSjiCCUkmv/"
+        password: "!"
         update_password: on_create
         state: present
       register: user_ret
@@ -21,7 +20,7 @@
       authorized_key:
         user: "{{docker_user}}"
         state: present
-        key: "{{ lookup('file', '/home/ottar/.ssh/id_rsa.pub') }}"
+        key: "{{pub_key}}"
 
     - name: Copy sudo file
       template: 
@@ -35,7 +34,7 @@
       blockinfile:
         path: /etc/hosts
         block: |
-          192.168.33.30 master
-          192.168.33.31 node1
-          192.168.33.32 node2
+          192.168.33.30 vamaster
+          192.168.33.31 vanode1
+          192.168.33.32 vanode2
     

@@ -12,19 +12,19 @@ Vagrant.configure("2") do | config |
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.define "master" do | master |
-    master.vm.box = "ubuntu/bionic64"
-    master.vm.network "private_network", ip: "192.168.33.30"
-    master.vm.hostname = "master"
-    master.persistent_storage.enabled = true
-    master.persistent_storage.location="/export/vagrant_db.vdi"
-    master.persistent_storage.size = 10000
-    master.persistent_storage.mountname="prosqldb"
-    master.persistent_storage.filesystem = 'ext4'
-    master.persistent_storage.mountpoint = "/data/prosqldb"
-    master.persistent_storage.volgroupname = "volumegrp1"
-    master.persistent_storage.diskdevice = '/dev/sdc'
-    master.vm.provider "virtualbox" do |vb|
+  config.vm.define "vamaster" do | vamaster |
+    vamaster.vm.box = "ubuntu/bionic64"
+    vamaster.vm.network "private_network", ip: "192.168.33.30"
+    vamaster.vm.hostname = "vamaster"
+    vamaster.persistent_storage.enabled = true
+    vamaster.persistent_storage.location="/export/vagrant_db.vdi"
+    vamaster.persistent_storage.size = 10000
+    vamaster.persistent_storage.mountname="prosqldb"
+    vamaster.persistent_storage.filesystem = 'ext4'
+    vamaster.persistent_storage.mountpoint = "/data/prosqldb"
+    vamaster.persistent_storage.volgroupname = "volumegrp1"
+    vamaster.persistent_storage.diskdevice = '/dev/sdc'
+    vamaster.vm.provider "virtualbox" do |vb|
     #   # Customize the amount of memory on the VM:
       vb.memory = "512"
       
@@ -36,19 +36,19 @@ Vagrant.configure("2") do | config |
       #vb.customize ['storageattach',:id,'--storagectl','SCSI','--port',2,'--device',0,'--type', 'hdd','--medium','/export/vagrant_db.vdi']
     end
   end
-  config.vm.define "node1" do|node1|
-    node1.vm.box = "ubuntu/bionic64"
-    node1.vm.network "private_network", ip:"192.168.33.31"
-    node1.vm.hostname = "node1"
-    node1.vm.provider "virtualbox" do |vb|
+  config.vm.define "vanode1" do|vanode1|
+    vanode1.vm.box = "ubuntu/bionic64"
+    vanode1.vm.network "private_network", ip:"192.168.33.31"
+    vanode1.vm.hostname = "vanode1"
+    vanode1.vm.provider "virtualbox" do |vb|
       vb.memory = "512"
     end
   end
-  config.vm.define "node2" do|node2|
-    node2.vm.box = "ubuntu/bionic64"
-    node2.vm.network "private_network", ip:"192.168.33.32"
-    node2.vm.hostname = "node2"
-    node2.vm.provider "virtualbox" do |vb|
+  config.vm.define "vanode2" do|vanode2|
+    vanode2.vm.box = "ubuntu/bionic64"
+    vanode2.vm.network "private_network", ip:"192.168.33.32"
+    vanode2.vm.hostname = "vanode2"
+    vanode2.vm.provider "virtualbox" do |vb|
       vb.memory = "512"
     end
   end
