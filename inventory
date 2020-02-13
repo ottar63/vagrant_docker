@@ -1,3 +1,5 @@
+[managers]
 vamaster
+[workers]
 vanode1
 vanode2

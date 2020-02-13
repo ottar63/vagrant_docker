@@ -1,5 +1,5 @@
 ---
-- hosts: vamaster
+- hosts: managers
   tasks:
     - name: Copy vote.yml
       template:

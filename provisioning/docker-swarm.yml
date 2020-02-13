@@ -17,14 +17,20 @@
           - jsondiff
           - pyyaml
 
+- hosts: managers
+  become: true
+  tasks:
     - name: Start docker swarm on master
       docker_swarm:
         advertise_addr:  192.168.33.30
         state: present
       register: swarm_out
-      when: ansible_host == "vamaster"
+      #when: ansible_host == "vamaster"
       
 
+- hosts: workers
+  become: true
+  tasks:
 # since vagrant creates it's own host only interface, we need to loop through 
 #interfaces on each node to set correct advertise address
     - name: Join nodes to swarm
@@ -35,5 +41,5 @@
         advertise_addr: "{{item}}"
       with_items:
         - "{{ansible_all_ipv4_addresses}}"
-      when: item is search("192.") and  ansible_host != "vamaser"
+      when: item is search("192.") 
 
