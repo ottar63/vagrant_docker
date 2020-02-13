@@ -33,20 +33,20 @@
         append: yes
         groups: docker 
 
-    - name: Create ssh keys on node master
-      openssh_keypair:
-        path: ./.ssh/id_rsa
-        owner: "{{docker_user}}"
-      when: ansible_host == "vamaster"
-      become_user: "{{docker_user}}"
-      register: ssh_key
-
-    - name: add keys to nodes
-      authorized_key:
-        user: "{{docker_user}}"
-        state: present
-        key: "{{hostvars.vamaster.ssh_key.public_key}}"
-      when: ansible_host != "vamaster"
+#    - name: Create ssh keys on node master
+#      openssh_keypair:
+#        path: ./.ssh/id_rsa
+#        owner: "{{docker_user}}"
+#      when: ansible_host == "vamaster"
+#      become_user: "{{docker_user}}"
+#      register: ssh_key
+#
+#    - name: add keys to nodes
+#      authorized_key:
+#        user: "{{docker_user}}"
+#        state: present
+#        key: "{{hostvars.vamaster.ssh_key.public_key}}"
+#      when: ansible_host != "vamaster"
 
 
     - name: ignore known_host
